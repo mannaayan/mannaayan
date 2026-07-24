@@ -1,0 +1,40 @@
+name: Metrics
+
+on:
+  # Regenerate every day at 00:00 UTC (05:30 IST)
+  schedule:
+    - cron: "0 0 * * *"
+  # Allow running manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  github-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate metrics.svg
+        uses: lowlighter/metrics@latest
+        with:
+          # A classic Personal Access Token stored as a repo secret.
+          # Scopes needed: repo, read:user  (add read:org for org data)
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: mannaayan
+          filename: metrics.svg
+          template: classic
+          config_timezone: Asia/Kolkata
+
+          # Core sections of the card
+          base: header, activity, community, repositories, metadata
+
+          # Language breakdown
+          plugin_languages: yes
+          plugin_languages_colors: github
+          plugin_languages_limit: 8
+          plugin_languages_sections: most-used
+          plugin_languages_threshold: 0%
+
+          # Isometric contribution calendar (the 3D calendar heatmap)
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
